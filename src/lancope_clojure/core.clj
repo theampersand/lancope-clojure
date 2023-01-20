@@ -1,6 +1,7 @@
 (ns lancope-clojure.core
   (:gen-class)
-  (:import (com.lancope GNodeImpl)))
+  (:import (com.lancope GNodeImpl))
+  (:use [clojure.walk]))
 
 ;  Instantiate a Graph and executes the following methods
 ;
@@ -23,7 +24,8 @@
   (new GNodeImpl "node-0" [(new GNodeImpl "node-1" [])
                            (new GNodeImpl "node-2" [(new GNodeImpl "node-3" []) (new GNodeImpl "node-4" [])])
                            ]))
+(defn hasChildren? [node] (seq (.getChildren node)))
+(defn walkGraph [graph]
+  (tree-seq hasChildren? #(.getChildren %) graph))
 
-
-
-(println (.getName (first (rest (.getChildren graph)))))
+(println (map #(.getName %) (walkGraph graph)))
